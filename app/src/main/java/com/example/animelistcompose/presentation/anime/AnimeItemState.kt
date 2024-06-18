@@ -3,5 +3,6 @@ package com.example.animelistcompose.presentation.anime
 import com.example.animelistcompose.domain.models.AnimeData
 
 data class AnimeItemState(
-    val animeData: AnimeData
+    val animeData: AnimeData?=null,
+    val loading:Boolean=false
 )

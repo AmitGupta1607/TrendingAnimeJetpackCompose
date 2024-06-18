@@ -1,5 +1,10 @@
+
+
 package com.example.animelistcompose.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +38,14 @@ import com.example.animelistcompose.domain.models.AnimeData
 import com.example.animelistcompose.ui.theme.PurpleLight
 
 
+@ExperimentalSharedTransitionApi
 @Composable
-fun TrendingAnimeItem(animeData: AnimeData, modifier: Modifier, onClick: (AnimeData) -> Unit) {
+fun SharedTransitionScope.TrendingAnimeItem(
+    animeData: AnimeData,
+    modifier: Modifier,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onClick: (AnimeData) -> Unit
+) {
     Card(modifier = modifier.clickable {
         onClick(animeData)
     }) {
@@ -46,7 +57,7 @@ fun TrendingAnimeItem(animeData: AnimeData, modifier: Modifier, onClick: (AnimeD
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             val requestItem = ImageRequest.Builder(LocalContext.current)
-                .data(animeData.attributes.posterImage.original).build()
+                .data(animeData.attributes.coverImage.original).build()
             AsyncImage(
                 model = requestItem,
                 contentDescription = "Anime Image",
@@ -54,6 +65,10 @@ fun TrendingAnimeItem(animeData: AnimeData, modifier: Modifier, onClick: (AnimeD
                     .size(100.dp)
                     .clip(
                         RoundedCornerShape(8.dp)
+                    )
+                    .sharedElement(
+                        rememberSharedContentState(key = animeData.id),
+                        animatedVisibilityScope = animatedVisibilityScope
                     ),
                 contentScale = ContentScale.Crop
             )
@@ -71,7 +86,11 @@ fun TrendingAnimeItem(animeData: AnimeData, modifier: Modifier, onClick: (AnimeD
                         contentDescription = "Rating",
                         tint = Color.Yellow
                     )
-                    Text(text = animeData.attributes.averageRating, fontSize = 14.sp,modifier=Modifier.padding(end=8.dp))
+                    Text(
+                        text = animeData.attributes.averageRating,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.height(1.dp))
                 Text(

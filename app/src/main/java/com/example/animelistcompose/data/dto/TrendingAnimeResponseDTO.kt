@@ -20,7 +20,7 @@ data class TrendingAnimeResponseDTO(
 
 data class DataDto(
     val attributes: AttributesDto,
-    val id: String,
+    val id: Int,
 ) {
     fun toData(): AnimeData {
        return AnimeData(attributes = attributes.toAttributes(),id=id)

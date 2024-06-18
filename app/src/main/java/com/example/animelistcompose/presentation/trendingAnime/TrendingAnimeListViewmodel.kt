@@ -27,6 +27,9 @@ class TrendingAnimeListViewmodel @Inject constructor(
     }
 
     private suspend fun fetchTrendingAnimeList() {
+        _state.update {
+            it.copy(isLoading = true)
+        }
         when (val response = animeRepository.getTrendingAnimeList()) {
             is Resource.Success -> {
                 val data = response.data

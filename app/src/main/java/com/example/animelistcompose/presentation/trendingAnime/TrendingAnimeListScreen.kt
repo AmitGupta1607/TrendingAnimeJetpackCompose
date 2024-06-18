@@ -1,6 +1,9 @@
 package com.example.animelistcompose.presentation.trendingAnime
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,39 +24,61 @@ import com.example.animelistcompose.domain.models.AnimeData
 import com.example.animelistcompose.ui.components.TrendingAnimeItem
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun TrendingAnimeScreen(state: TrendingAnimeListState) {
+fun SharedTransitionScope.TrendingAnimeScreen(
+    state: TrendingAnimeListState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onItemClick: (AnimeData) -> Unit
+) {
     val trendingAnimeList = state.trendingAnimeList
-    
-    Scaffold() { innerPadding->
-        AnimatedContent(targetState = state.isLoading ,label="") {isLoading->
-            if(isLoading){
-                Box(modifier =Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+
+    Scaffold() { innerPadding ->
+        AnimatedContent(targetState = state.isLoading, label = "") { isLoading ->
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
-            }
-            else{
-                TrendingAnimeList(list = trendingAnimeList, innerPaddingValues = innerPadding)
+            } else {
+                TrendingAnimeList(
+                    list = trendingAnimeList,
+                    innerPaddingValues = innerPadding,
+                    onItemClick,
+                    animatedVisibilityScope
+                )
             }
         }
     }
-    
+
 }
 
-@Composable
-fun TrendingAnimeList(list:List<AnimeData>,innerPaddingValues: PaddingValues){
-    LazyColumn (verticalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(
-        start = 12.dp,
-        end = 12.dp,
-        top = 12.dp+innerPaddingValues.calculateTopPadding(),
-        bottom = 8.dp+innerPaddingValues.calculateBottomPadding()
-    )){
-        item {
-            Text(text="Trending Animes", fontSize = 32.sp, fontWeight = FontWeight.Medium)
-        }
-        items(list){
-            TrendingAnimeItem(animeData = it, modifier = Modifier.fillMaxWidth()) {
 
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun SharedTransitionScope.TrendingAnimeList(
+    list: List<AnimeData>,
+    innerPaddingValues: PaddingValues,
+    onItemClick: (AnimeData) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(
+            start = 12.dp,
+            end = 12.dp,
+            top = 12.dp + innerPaddingValues.calculateTopPadding(),
+            bottom = 8.dp + innerPaddingValues.calculateBottomPadding()
+        )
+    ) {
+        item {
+            Text(text = "Trending Animes", fontSize = 32.sp, fontWeight = FontWeight.Medium)
+        }
+        items(list) {
+            TrendingAnimeItem(
+                animeData = it,
+                modifier = Modifier.fillMaxWidth(),
+                animatedVisibilityScope = animatedVisibilityScope
+            ) {
+                onItemClick.invoke(it)
             }
         }
     }

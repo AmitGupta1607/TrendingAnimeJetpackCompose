@@ -2,7 +2,9 @@ package com.example.animelistcompose
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.animelistcompose.navigation.AppNavigation
 import com.example.animelistcompose.presentation.trendingAnime.TrendingAnimeList
 import com.example.animelistcompose.presentation.trendingAnime.TrendingAnimeListViewmodel
 import com.example.animelistcompose.presentation.trendingAnime.TrendingAnimeScreen
@@ -23,6 +26,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(
+            android.graphics.Color.TRANSPARENT
+        ))
         setContent {
             AnimeListComposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -32,7 +39,7 @@ class MainActivity : ComponentActivity() {
 //                ) {
                     val viewmodel = hiltViewModel<TrendingAnimeListViewmodel>()
                     val state by viewmodel.state.collectAsStateWithLifecycle()
-                    TrendingAnimeScreen(state = state)
+                    AppNavigation()
 //                }
             }
         }

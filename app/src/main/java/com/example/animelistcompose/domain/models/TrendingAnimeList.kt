@@ -10,7 +10,7 @@ data class AnimeResponse(
 
 data class AnimeData(
     val attributes: Attributes,
-    val id: String,
+    val id: Int,
 )
 
 data class Attributes(
